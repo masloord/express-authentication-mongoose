@@ -16,6 +16,13 @@ app.use(require('morgan')('dev'))
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(ejsLayouts)
 
+var session = require('express-session')
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: true
+}))
+
 app.get('/', function (req, res) {
   res.render('index')
 })

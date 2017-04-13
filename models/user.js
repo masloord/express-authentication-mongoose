@@ -38,6 +38,21 @@ userSchema.pre('save', function (next) {
   user.password = hash
   next()
 })
+
+userSchema.statics.findByEmail = function (givenEmail, next) {
+  this.findOne({
+    email: givenEmail
+  }, function (err, foundUser) {
+    if (err) return 'user not found'
+
+    next(null, foundUser)
+  })
+}
+
+userSchema.methods.validPassword = function (givenPassword) {
+  var hashedpassword = this.password
+  return bcrypt.compareSync(givenPassword, hashedpassword)
+}
 var User = mongoose.model('User', userSchema)
 
 module.exports = User

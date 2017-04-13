@@ -22,8 +22,26 @@ router.get('/register', function (req, res) {
   res.redirect('auth/signup')
 })
 
-router.get('/login', function (req, res) {
+router.route('/login')
+.get(function (req, res) {
   res.render('auth/login')
+})
+.post(function (req, res) {
+  User.findByEmail(req.body.email, function (err, foundUser) {
+    if (err) return res.send(err)
+    if (!foundUser) {
+      console.log('no user')
+      return res.redirect('/login')
+    }
+    var givenPassword = req.body.password
+    if (foundUser.validPassword(givenPassword)) {
+      console.log('correct password')
+      res.redirect('/profile')
+    } else {
+      console.log('wrong password')
+      res.redirect('/login')
+    }
+  })
 })
 
 module.exports = router
